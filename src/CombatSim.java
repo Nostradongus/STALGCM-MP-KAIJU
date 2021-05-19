@@ -87,34 +87,35 @@ class Kaiju {
         
         // get index of state on states[] 
         for (int j = 0; j < states.length; j++)
-            if (states[j].equals(curState))
-                stateIndex = j; 
+            if (states[j].equals(curState)) {
+                // as there are 2*|M| transitions per state 
+                // "ok" and "hurt" statuses per move transitions 
+                stateIndex = j * (2 * moves.length); 
+                
+                // get index of move on moves[] 
+                for (int k = 0; k < moves.length; k++)
+                    if (moves[k].name.equals(move)) {
+                        // as there are 2 transitions per move on each state 
+                        // "ok" and "hurt" statuses
+                        moveIndex = k * 2; 
+                        
+                        // if the given status of opponent kaiju is "hurt"
+                        // move to the second pair of state and move's transition 
+                        if (status.equals("hurt"))
+                            moveIndex++;  
+                        
+                        // final index value 
+                        int index = stateIndex + moveIndex; 
+                        
+                        // get the next state that the kaiju will transition into as well 
+                        // as its next move 
+                        curState = transitions[index][3]; 
+                        return moveFunc[index][3];
+                    }
+            }
         
-        // as there are 2*|M| move transitions per state 
-        // "ok" and "hurt" statuses per move transitions 
-        stateIndex *= (2 * moves.length);
-        
-        // get index of move on moves[] 
-        for (int j = 0; j < moves.length; j++)
-            if (moves[j].name.equals(move))
-                moveIndex = j; 
-        
-        // as there are 2 transitions per move on each state 
-        // "ok and hurt" statuses 
-        moveIndex *= 2; 
-        
-        // if the given status of opponent kaiju is "hurt"
-        // move to the second pair of state and move's transition 
-        if (status.equals("hurt"))
-            moveIndex++; 
-        
-        // final index value 
-        int index = stateIndex + moveIndex; 
-        
-        // get the next state that the kaiju will transition into as well as its
-        // next move 
-        curState = transitions[index][3]; 
-        return moveFunc[index][3];
+        // default return, as needed for Java
+        return null;
     }
 
     /**
